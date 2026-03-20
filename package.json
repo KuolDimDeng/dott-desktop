@@ -39,7 +39,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "dottapps",
+        "owner": "KuolDimDeng",
         "repo": "dott-desktop",
         "releaseType": "release"
       }
