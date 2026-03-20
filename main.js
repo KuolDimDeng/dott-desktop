@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu, shell, dialog, nativeImage } = require('electr
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
 
-const APP_URL = 'https://app.dottapps.com';
+const APP_URL = 'https://merchants.dottapps.com';
 const isDev = process.argv.includes('--dev');
 
 let mainWindow;
@@ -27,14 +27,14 @@ function createWindow() {
     backgroundColor: '#ffffff',
   });
 
-  mainWindow.loadURL(isDev ? 'https://staging.dottapps.com' : APP_URL);
+  mainWindow.loadURL(isDev ? 'https://staging.dottapps.com/merchant' : APP_URL);
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https://app.dottapps.com') || url.startsWith('https://staging.dottapps.com')) {
+    if (url.startsWith('https://merchants.dottapps.com') || url.startsWith('https://staging.dottapps.com')) {
       return { action: 'allow' };
     }
     shell.openExternal(url);
@@ -54,7 +54,7 @@ function buildMenu() {
         { label: 'About Dott', role: 'about' },
         { label: 'Check for Updates...', click: () => checkForUpdatesManual() },
         { type: 'separator' },
-        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => mainWindow?.loadURL(`${isDev ? 'https://staging.dottapps.com' : APP_URL}/Settings`) },
+        { label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: () => navigateTo('/settings') },
         { type: 'separator' },
         { role: 'hide' },
         { role: 'hideOthers' },
@@ -66,7 +66,7 @@ function buildMenu() {
     {
       label: 'File',
       submenu: [
-        { label: 'Dashboard', accelerator: 'CmdOrCtrl+D', click: () => mainWindow?.loadURL(`${isDev ? 'https://staging.dottapps.com' : APP_URL}/dashboard`) },
+        { label: 'Dashboard', accelerator: 'CmdOrCtrl+D', click: () => navigateTo('/') },
         { type: 'separator' },
         process.platform === 'darwin' ? { role: 'close' } : { role: 'quit' },
       ],
@@ -103,11 +103,13 @@ function buildMenu() {
         { label: 'Back', accelerator: 'CmdOrCtrl+[', click: () => mainWindow?.webContents.goBack() },
         { label: 'Forward', accelerator: 'CmdOrCtrl+]', click: () => mainWindow?.webContents.goForward() },
         { type: 'separator' },
-        { label: 'Dashboard', accelerator: 'CmdOrCtrl+1', click: () => navigateTo('/dashboard') },
-        { label: 'Invoices', accelerator: 'CmdOrCtrl+2', click: () => navigateTo('/invoices') },
+        { label: 'Dashboard', accelerator: 'CmdOrCtrl+1', click: () => navigateTo('/') },
+        { label: 'Orders', accelerator: 'CmdOrCtrl+2', click: () => navigateTo('/orders') },
         { label: 'Inventory', accelerator: 'CmdOrCtrl+3', click: () => navigateTo('/inventory') },
         { label: 'POS', accelerator: 'CmdOrCtrl+4', click: () => navigateTo('/pos') },
-        { label: 'Settings', accelerator: 'CmdOrCtrl+,', click: () => navigateTo('/Settings') },
+        { label: 'Staff', accelerator: 'CmdOrCtrl+5', click: () => navigateTo('/staff') },
+        { label: 'Reports', accelerator: 'CmdOrCtrl+6', click: () => navigateTo('/reports') },
+        { label: 'Settings', accelerator: 'CmdOrCtrl+,', click: () => navigateTo('/settings') },
       ],
     },
     {
@@ -140,7 +142,7 @@ function buildMenu() {
 }
 
 function navigateTo(path) {
-  const base = isDev ? 'https://staging.dottapps.com' : APP_URL;
+  const base = isDev ? 'https://staging.dottapps.com/merchant' : APP_URL;
   mainWindow?.loadURL(`${base}${path}`);
 }
 
